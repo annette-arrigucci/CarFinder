@@ -28,7 +28,6 @@ namespace CarFinder.Controllers
         public async Task<List<string>> GetYears()
         {
             return await db.GetYears();
-            //TO DO: Need to create this stored procedure
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace CarFinder.Controllers
         [Route("{year}/Makes")]
         public async Task<List<string>> GetMakes(string year)
         {
-            return await db.GetMakes();
+            return await db.GetMakes(year);
             //TO DO: Need to create this stored procedure
         }
 
@@ -56,6 +55,19 @@ namespace CarFinder.Controllers
         }
 
         /// <summary>
+        /// Get all trims models for a specified year, car make and model.
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="make"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("{year}/{make}/{model}/Trims")]
+        public async Task<List<string>> GetTrims(string year, string make, string model)
+        {
+            return await db.GetTrims(year, make, model);
+        }
+
+        /// <summary>
         /// Get all details on a specified car according to year, make, model and trim.
         /// </summary>
         /// <param name="year"></param>
@@ -63,70 +75,71 @@ namespace CarFinder.Controllers
         /// <param name="model"></param>
         /// <param name="trim"></param>
         /// <returns></returns>
+        [Route("{year}/{make}/{model}/{trim}")]
         public async Task<List<Car>> GetCarByYearMakeModelTrim(string year, string make, string model, string trim)
         {
             return await db.GetCarByYearMakeModelTrim(year, make, model, trim);
         }
 
-        [Route("Car")]
-        public async Task<IHttpActionResult> getCarData(string year = "", string make = "", string model = "", string trim = "")
-        {
-            HttpResponseMessage response;
-            var content = new carRecall();
-            var singleCar = GetaCar(year, make, model, trim);
-            var car = new CarViewModel
-            {
-                Car = singleCar,
-                Recalls = "",
-                Image = ""
+        //[Route("Car")]
+        //public async Task<IHttpActionResult> getCarData(string year = "", string make = "", string model = "", string trim = "")
+        //{
+        //    HttpResponseMessage response;
+        //    var content = new carRecall();
+        //    var singleCar = GetaCar(year, make, model, trim);
+        //    var car = new CarViewModel
+        //    {
+        //        Car = singleCar,
+        //        Recalls = "",
+        //        Image = ""
 
-            };
-
-
-            //Get recall Data
-            string result1 = "";
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://www.nhtsa.gov/");
-                try
-                {
-                    response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + year + "/make/"
-                        + make + "/model/" + model + "?format=json");
-                    result1 = await response.Content.ReadAsStringAsync();
-                    car.Recalls = JsonConvert.DeserializeObject(result1);
-                }
-                catch (Exception e)
-                {
-                    return InternalServerError(e);
-                }
-            }
+        //    };
 
 
+        //    //Get recall Data
+        //    string result1 = "";
+        //    using (var client = new HttpClient())
+        //    {
+        //        client.BaseAddress = new Uri("http://www.nhtsa.gov/");
+        //        try
+        //        {
+        //            response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + year + "/make/"
+        //                + make + "/model/" + model + "?format=json");
+        //            result1 = await response.Content.ReadAsStringAsync();
+        //            car.Recalls = JsonConvert.DeserializeObject(result1);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            return InternalServerError(e);
+        //        }
+        //    }
 
-            //////////////////////////////   My Bing Search   //////////////////////////////////////////////////////////
-
-            string query = year + " " + make + " " + model + " " + trim;
-
-            string rootUri = "https://api.datamarket.azure.com/Bing/Search";
-
-            var bingContainer = new Bing.BingSearchContainer(new Uri(rootUri));
-
-            var accountKey = ConfigurationManager.AppSettings["searchKey"];
-
-            bingContainer.Credentials = new NetworkCredential(accountKey, accountKey);
 
 
-            var imageQuery = bingContainer.Image(query, null, null, null, null, null, null);
+        //    //////////////////////////////   My Bing Search   //////////////////////////////////////////////////////////
 
-            var imageResults = imageQuery.Execute().ToList();
+        //    string query = year + " " + make + " " + model + " " + trim;
+
+        //    string rootUri = "https://api.datamarket.azure.com/Bing/Search";
+
+        //    var bingContainer = new Bing.BingSearchContainer(new Uri(rootUri));
+
+        //    var accountKey = ConfigurationManager.AppSettings["searchKey"];
+
+        //    bingContainer.Credentials = new NetworkCredential(accountKey, accountKey);
 
 
-            car.Image = imageResults.First().MediaUrl;
+        //    var imageQuery = bingContainer.Image(query, null, null, null, null, null, null);
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //    var imageResults = imageQuery.Execute().ToList();
 
-            return Ok(car);
 
-        }
+        //    car.Image = imageResults.First().MediaUrl;
+
+        //    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //    return Ok(car);
+
+        //}
     }
 }
