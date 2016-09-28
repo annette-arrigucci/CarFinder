@@ -1,0 +1,2 @@
+C:\Users\Me\projects\CarFinder\CarFinder\obj\Debug\CarFinder.csproj.App.config
+C:\Users\Me\projects\CarFinder\CarFinder\obj\Debug\CarFinder.csprojResolveAssemblyReference.cache
