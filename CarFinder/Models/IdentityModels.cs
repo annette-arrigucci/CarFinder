@@ -6,6 +6,12 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Web.Http;
+using System.Net.Http;
+using System;
+using System.Configuration;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace CarFinder.Models
 {
