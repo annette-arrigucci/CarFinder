@@ -1,5 +1,4 @@
 C:\Users\Me\projects\CarFinder\CarFinder\obj\Debug\CarFinder.csproj.App.config
-C:\Users\Me\projects\CarFinder\CarFinder\obj\Debug\CarFinder.csprojResolveAssemblyReference.cache
 C:\Users\Me\projects\CarFinder\CarFinder\bin\roslyn\csc.exe
 C:\Users\Me\projects\CarFinder\CarFinder\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
 C:\Users\Me\projects\CarFinder\CarFinder\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
@@ -90,3 +89,6 @@ C:\Users\Me\projects\CarFinder\CarFinder\bin\Microsoft.Owin.Security.MicrosoftAc
 C:\Users\Me\projects\CarFinder\CarFinder\bin\System.Web.Http.Owin.xml
 C:\Users\Me\projects\CarFinder\CarFinder\obj\Debug\CarFinder.dll
 C:\Users\Me\projects\CarFinder\CarFinder\obj\Debug\CarFinder.pdb
+C:\Users\Me\projects\CarFinder\CarFinder\bin\System.Web.Cors.dll
+C:\Users\Me\projects\CarFinder\CarFinder\bin\System.Web.Http.Cors.dll
+C:\Users\Me\projects\CarFinder\CarFinder\bin\System.Web.Http.Cors.xml

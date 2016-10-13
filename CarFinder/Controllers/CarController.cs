@@ -8,12 +8,14 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using Bing;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet;
 
 namespace CarFinder.Controllers
 {
-    //[EnableCors(origins: “*”, headers: “*”, methods: “*”)]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     //this is a quick and dirty solution to allow cross-origin resource sharing
     [RoutePrefix("api/Car")]
     public class CarController : ApiController
@@ -121,7 +123,7 @@ namespace CarFinder.Controllers
                     response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + year + "/make/"
                         + make + "/model/" + model + "?format=json");
                     content = await response.Content.ReadAsStringAsync();
-
+                    car.Recalls = JsonConvert.DeserializeObject(content);
                 }
                 catch (Exception e)
                 {
@@ -129,7 +131,7 @@ namespace CarFinder.Controllers
                 }
             }
 
-            car.Recalls = content;
+            //car.Recalls = content;
 
 
             //////////////////////////////   My Bing Search   //////////////////////////////////////////////////////////
