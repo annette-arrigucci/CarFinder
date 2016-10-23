@@ -92,3 +92,4 @@ C:\Users\Me\projects\CarFinder\CarFinder\obj\Debug\CarFinder.pdb
 C:\Users\Me\projects\CarFinder\CarFinder\bin\System.Web.Cors.dll
 C:\Users\Me\projects\CarFinder\CarFinder\bin\System.Web.Http.Cors.dll
 C:\Users\Me\projects\CarFinder\CarFinder\bin\System.Web.Http.Cors.xml
+C:\Users\Me\projects\CarFinder\CarFinder\obj\Debug\CarFinder.csprojResolveAssemblyReference.cache

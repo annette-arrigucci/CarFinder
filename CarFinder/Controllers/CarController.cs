@@ -84,6 +84,20 @@ namespace CarFinder.Controllers
             return await db.GetCarByYearMakeModelTrim(year, make, model, trim);
         }
 
+        /// <summary>
+        /// Get all details on a specified car according to year, make, model and trim.
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="make"></param>
+        /// <param name="model"></param>
+        /// <param name="trim"></param>
+        /// <returns></returns>
+        [Route("{year}/{make}/{model}")]
+        public async Task<List<Car>> GetCarByYearMakeModel(string year, string make, string model)
+        {
+            return await db.GetCarByYearMakeModel(year, make, model);
+        }
+
         ///////////// RETURNING DATA TO VIEW ///////////////
         // api/Car/getCar?year=2014&make=Kia&Model=Soul&Trim=4dr%20Wagon%20(1.6L%204cyl%206A)
         /// <summary>
@@ -123,20 +137,95 @@ namespace CarFinder.Controllers
                     response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + year + "/make/"
                         + make + "/model/" + model + "?format=json");
                     content = await response.Content.ReadAsStringAsync();
-                    car.Recalls = JsonConvert.DeserializeObject(content);
+                    
                 }
                 catch (Exception e)
                 {
                     return InternalServerError(e);
                 }
             }
-
-            //car.Recalls = content;
+            //car.Recalls = JsonConvert.DeserializeObject(content);
+            car.Recalls = content;
 
 
             //////////////////////////////   My Bing Search   //////////////////////////////////////////////////////////
 
             string query = year + " " + make + " " + model + " " + trim;
+
+            string rootUri = "https://api.datamarket.azure.com/Bing/Search";
+
+            var bingContainer = new Bing.BingSearchContainer(new Uri(rootUri));
+
+            var accountKey = ConfigurationManager.AppSettings["searchKey"]; ;
+
+            bingContainer.Credentials = new NetworkCredential(accountKey, accountKey);
+
+
+            var imageQuery = bingContainer.Image(query, null, null, null, null, null, null);
+
+            var imageResults = imageQuery.Execute().ToList();
+
+
+            car.Image = imageResults.First().MediaUrl;
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            return Ok(car);
+
+        }
+
+        ///////////// RETURNING DATA TO VIEW ///////////////
+        // api/Car/getCarNoTrim?year=2014&make=Kia&Model=Soul
+        /// <summary>
+        /// Get all car details, image, and recall info for given year, make, model, and trim.
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="make"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("getCarNoTrim")]
+        public async Task<IHttpActionResult> GetCarData(string year = "", string make = "", string model = "")
+        {
+            HttpResponseMessage response;
+            var content = "";
+
+            //This is a call to "your" personal API to get a car. 
+            //You may need to change the method name
+
+            List<Car> carList = await GetCarByYearMakeModel(year, make, model);
+            var singleCar = carList.First();
+            var car = new CarViewModel
+            {
+                Car = singleCar,
+                Recalls = content,
+                Image = ""
+
+            };
+
+            //Get recall Data
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://www.nhtsa.gov/");
+                try
+                {
+                    response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + year + "/make/"
+                        + make + "/model/" + model + "?format=json");
+                    content = await response.Content.ReadAsStringAsync();
+
+                }
+                catch (Exception e)
+                {
+                    return InternalServerError(e);
+                }
+            }
+            //car.Recalls = JsonConvert.DeserializeObject(content);
+            car.Recalls = content;
+
+
+            //////////////////////////////   My Bing Search   //////////////////////////////////////////////////////////
+
+            string query = year + " " + make + " " + model;
 
             string rootUri = "https://api.datamarket.azure.com/Bing/Search";
 
