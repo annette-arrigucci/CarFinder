@@ -12,6 +12,7 @@ using System.Web.Http.Cors;
 using Bing;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet;
+using Newtonsoft.Json.Linq;
 
 namespace CarFinder.Controllers
 {
@@ -131,7 +132,7 @@ namespace CarFinder.Controllers
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://www.nhtsa.gov/");
+                client.BaseAddress = new Uri("https://one.nhtsa.gov/");
                 try
                 {
                     response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + year + "/make/"
@@ -150,7 +151,7 @@ namespace CarFinder.Controllers
 
             //////////////////////////////   My Bing Search   //////////////////////////////////////////////////////////
 
-            string query = year + " " + make + " " + model + " " + trim;
+            /*string query = year + " " + make + " " + model + " " + trim;
 
             string rootUri = "https://api.datamarket.azure.com/Bing/Search";
 
@@ -166,7 +167,23 @@ namespace CarFinder.Controllers
             var imageResults = imageQuery.Execute().ToList();
 
 
-            car.Image = imageResults.First().MediaUrl;
+            car.Image = imageResults.First().MediaUrl;*/
+
+            var client2 = new HttpClient();
+            var accountKey = ConfigurationManager.AppSettings["searchKey"];
+            // Request headers  
+            client2.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", accountKey);
+            // Request parameters
+            string query = year + " " + make + " " + model + " " + trim;
+            string count = "1";
+            string offset = "0";
+            //string mkt = "en-us";
+            var ImgSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v5.0/images/search?";
+            var result = await client2.GetAsync(string.Format("{0}q={1}&count={2}&offset={3}", ImgSearchEndPoint, WebUtility.UrlEncode(query), count, offset));
+            result.EnsureSuccessStatusCode();
+            var json = await result.Content.ReadAsStringAsync();
+            dynamic data = JObject.Parse(json);
+            car.Image = data.value[0].contentUrl;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -206,7 +223,7 @@ namespace CarFinder.Controllers
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://www.nhtsa.gov/");
+                client.BaseAddress = new Uri("https://one.nhtsa.gov/");
                 try
                 {
                     response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + year + "/make/"
@@ -225,7 +242,7 @@ namespace CarFinder.Controllers
 
             //////////////////////////////   My Bing Search   //////////////////////////////////////////////////////////
 
-            string query = year + " " + make + " " + model;
+            /*string query = year + " " + make + " " + model;
 
             string rootUri = "https://api.datamarket.azure.com/Bing/Search";
 
@@ -241,7 +258,23 @@ namespace CarFinder.Controllers
             var imageResults = imageQuery.Execute().ToList();
 
 
-            car.Image = imageResults.First().MediaUrl;
+            car.Image = imageResults.First().MediaUrl;*/
+
+            var client2 = new HttpClient();
+            var accountKey = ConfigurationManager.AppSettings["searchKey"];
+            // Request headers  
+            client2.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", accountKey);
+            // Request parameters
+            string query = year + " " + make + " " + model;
+            string count = "1";
+            string offset = "0";
+            //string mkt = "en-us";
+            var ImgSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v5.0/images/search?";
+            var result = await client2.GetAsync(string.Format("{0}q={1}&count={2}&offset={3}", ImgSearchEndPoint, WebUtility.UrlEncode(query), count, offset));
+            result.EnsureSuccessStatusCode();
+            var json = await result.Content.ReadAsStringAsync();
+            dynamic data = JObject.Parse(json);
+            car.Image = data.value[0].contentUrl;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
